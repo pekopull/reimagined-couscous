@@ -1,0 +1,11 @@
+catboost==1.2.2
+matplotlib==3.7.1
+matplotlib-inline==0.1.6
+matplotlib-venn==0.11.9
+numpy==1.23.5
+pandas==1.5.3
+pandas-datareader==0.10.0
+pandas-gbq==0.17.9
+pandas-stubs==1.5.3.230304
+seaborn==0.12.2
+sklearn-pandas==2.2.0
