@@ -5,6 +5,7 @@
 因此我並不熟悉如何使用 .py 的環境，所以可能會有一些奇怪的地方，請見諒。
 建議參考 .ipynb 檔案，並且使用 Jupyter Notebook 執行。
 
+
 ## Preprocess
 
 初賽期間我並沒有把處理好的資料儲存下來，因為檔案太大了，所以每次執行都會重新處理一次資料(非常沒有效率)。
@@ -28,6 +29,7 @@
 
 ## 資料夾結構
 
+
 Preprocess/: 存放前處理的code
 Model/: 存放模型訓練相關code
 Model/saved_models: 存放訓練好的 Catboost 模型 (.cbm)
@@ -39,10 +41,29 @@ run_inference.py: 使用訓練好的 .cbm 模型檔案進行 Inference
 
 ## 執行方法
 
-安裝所需套件
+首先需要安裝所需套件，然後解壓縮模型檔案。
 ```
+# 安裝所需套件
 $ pip install -r requirements.txt
+# 解壓縮模型
+$ unzip Model/saved_models/catboost_iter1146.zip -d Model/saved_models
+
 ```
+
+如果模型檔案有問題，可以使用以下連結下載模型檔案
+https://drive.google.com/file/d/1gk04WpwMNltwkinwfnGoaUQFItG-9Jet/view?usp=sharing
+備用連結: https://drive.google.com/file/d/1--i76ylDaYiRxDueRh04vuWCLlbOwimv/view?usp=sharing
+
+
+接下來要選擇要執行的程式
+目前需要的資料有:
+- dataset_1st/training.csv
+- dataset_2nd/public.csv
+- dataset_2nd/private_1_processed.csv
+
+未來如果資料有變動，需要修改 Preprocess/load.py 以及 Preprocess/preprocess.py
+
+
 
 ### run_inference.py
 
@@ -57,16 +78,18 @@ run_inference.py 會執行 Preprocess/load.py 以及 Preprocess/preprocess.py，
 
 
 執行參數
-- ${1}: 訓練資料路徑
-- ${2}: 測試資料路徑
-- ${3}: 區分訓練資料與測試資料的日期 (locdt)
-- ${4}: 區分訓練資料與驗證資料的日期 (locdt)
-- ${5}: 模型讀取路徑 (.cbm)
-- ${6}: 輸出檔案路徑 (.csv)
+
+- ${1}: training.csv 路徑
+- ${2}: public.csv 路徑
+- ${3}: private_1_processed.csv 路徑
+- ${4}: 區分訓練資料與測試資料的日期 (locdt)，在 preprocess.py 會使用到
+- ${5}: 區分訓練資料與驗證資料的日期 (locdt)，在 Model 會使用到
+- ${6}: 模型讀取路徑 (.cbm)
+- ${7}: 輸出檔案路徑 (.csv)
 
 執行範例
 ```
-$ python run_inference.py dataset_1st/training.csv dataset_2nd/public.csv 60 56 Model/saved_models/catboost_iter1146.cbm output.csv
+$ python run_inference.py dataset_1st/training.csv dataset_2nd/public.csv dataset_2nd/private_1_processed.csv 60 56 Model/saved_models/catboost_iter1146.cbm output_inference.csv
 ```
 
 ### run_train.py
@@ -74,19 +97,21 @@ $ python run_inference.py dataset_1st/training.csv dataset_2nd/public.csv 60 56 
 如需訓練模型，可以使用 run_train.py 進行訓練。
 run_train.py 會執行 Preprocess/load.py 以及 Preprocess/preprocess.py，然後在 Model/train.py 訓練模型並儲存模型。最後產生繳交的.csv檔案。
 請注意由於使用 GPU 訓練模型會有非確定性，因此每次訓練結果會有些微差異。
-
+建議使用 ipynb 檔案進行訓練，並且使用 GPU 訓練模型。
+在 train.py 可以設定模型參數
 
 執行參數
-- ${1}: 訓練資料路徑
-- ${2}: 測試資料路徑
-- ${3}: 區分訓練資料與測試資料的日期 (locdt)
-- ${4}: 區分訓練資料與驗證資料的日期 (locdt)
-- ${5}: 模型儲存路徑 (.cbm)
-- ${6}: 輸出檔案路徑 (.csv)
+- ${1}: training.csv 路徑
+- ${2}: public.csv 路徑
+- ${3}: private_1_processed.csv 路徑
+- ${4}: 區分訓練資料與測試資料的日期 (locdt)，在 preprocess.py 會使用到
+- ${5}: 區分訓練資料與驗證資料的日期 (locdt)，在 Model 會使用到
+- ${6}: 模型儲存路徑 (.cbm)
+- ${7}: 輸出檔案路徑 (.csv)
 
 執行範例
 ```
-$ python run_train.py dataset_1st/training.csv dataset_2nd/public.csv 60 56 Model/saved_models/model.cbm output.csv
+$ python run_inference.py dataset_1st/training.csv dataset_2nd/public.csv dataset_2nd/private_1_processed.csv 60 56 Model/saved_models/model_train.cbm output_train.csv
 ```
 
 ### run_validation.py
@@ -96,14 +121,15 @@ $ python run_train.py dataset_1st/training.csv dataset_2nd/public.csv 60 56 Mode
 run_validation.py 會執行 Preprocess/load.py 以及 Preprocess/preprocess.py，然後在 Model/train.py 訓練模型並儲存模型。
 
 執行參數
-- ${1}: 訓練資料路徑
-- ${2}: 測試資料路徑
-- ${3}: 區分訓練資料與測試資料的日期 (locdt)
-- ${4}: 區分訓練資料與驗證資料的日期 (locdt)
+- ${1}: training.csv 路徑
+- ${2}: public.csv 路徑
+- ${3}: private_1_processed.csv 路徑
+- ${4}: 區分訓練資料與測試資料的日期 (locdt)，在 preprocess.py 會使用到
+- ${5}: 區分訓練資料與驗證資料的日期 (locdt)，在 Model 會使用到
 
 執行範例
 ```
-$ python run_validation.py dataset_1st/training.csv dataset_2nd/public.csv 60 56
+$ python run_inference.py dataset_1st/training.csv dataset_2nd/public.csv dataset_2nd/private_1_processed.csv 60 56
 ```
 
 ## ipynb 檔案

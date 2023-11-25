@@ -22,14 +22,16 @@ from sklearn.metrics import precision_recall_curve
 from Preprocess.preprocess import df_train
 from Preprocess.preprocess import df_public
 
+
+
 columns_to_drop = ['txkey']
 
 # Split the data into feature (X) and label (y) data
 # df_train_new = df_train[df_train['locdt'] >= 0]
 X_train = df_train[df_train['locdt'] >= 0 ].drop(['label']+columns_to_drop, axis=1)  # Assuming you want to exclude the 'label' column from X
-X_test = df_train[df_train['locdt'] >= int(sys.argv[4])].drop(['label']+columns_to_drop, axis=1)  # Assuming you want to exclude the 'label' column from X
+X_test = df_train[df_train['locdt'] >= int(sys.argv[5])].drop(['label']+columns_to_drop, axis=1)  # Assuming you want to exclude the 'label' column from X
 y_train = df_train[df_train['locdt'] >= 0 ]['label'].astype(int)
-y_test = df_train[df_train['locdt'] >= int(sys.argv[4])]['label'].astype(int)
+y_test = df_train[df_train['locdt'] >= int(sys.argv[5])]['label'].astype(int)
 
 print("# training data: {:d}\n# test data: {:d}".format(len(X_train), len(X_test)))
 
@@ -113,3 +115,26 @@ print('Default f1:',f1_score(y_test, model0.predict(X_test)))
 print('Best F1 Score:', best_f1)
 
 
+
+model0.save_model(sys.argv[6])
+
+
+
+# Define the new threshold
+new_threshold = 0.5
+predicted_probabilities = model0.predict_proba(df_public.drop(columns_to_drop+['label'],axis=1))
+
+# Apply the new threshold and convert probabilities to binary predictions
+adjusted_predictions = (predicted_probabilities[:, 1] > new_threshold).astype(int)
+
+# Count the occurrences of 0 and 1 in the adjusted predictions
+num_zeros = np.sum(adjusted_predictions == 0)
+num_ones = np.sum(adjusted_predictions == 1)
+
+# Print the counts
+print(f"Number of Predictions (0): {num_zeros}")
+print(f"Number of Predictions (1): {num_ones}")
+
+ans = pd.DataFrame(data={'txkey': df_public['txkey'], 'pred': adjusted_predictions})
+ans=ans.set_index('txkey')
+ans.to_csv(sys.argv[7])

@@ -20,19 +20,14 @@ from sklearn.metrics import precision_recall_curve
 
 
 from Preprocess.load import df_train
-from Preprocess.load import df_public
+from Preprocess.load import df_public2
+from Preprocess.load import df_private
 
 print("preprocess.py start")
 
-df_combined = pd.concat([df_train, df_public], axis=0)
+df_combined = pd.concat([df_train, df_public2, df_private], axis=0)
 df_combined.sort_values(['cano', 'locdt'], inplace=True)
 
-# free up memory
-del df_train
-del df_public
-gc.collect()
-df_train = pd.DataFrame()
-df_public = pd.DataFrame()
 
 ################################################################################################
 #
@@ -268,8 +263,9 @@ object_columns_to_category = [
 df_combined[object_columns_to_category] = df_combined[object_columns_to_category].astype('category')
 
 # Split the combined DataFrame back into df_train and df_public based on locdt
-df_public = df_combined[df_combined['locdt'] >= int(sys.argv[3])]
-df_train = df_combined[df_combined['locdt'] < int(sys.argv[3])]
+print(int(sys.argv[3]))
+df_public = df_combined[df_combined['locdt'] >= int(sys.argv[4])]
+df_train = df_combined[df_combined['locdt'] < int(sys.argv[4])]
 
 
 # Reset the index of the DataFrames
@@ -277,12 +273,8 @@ df_train.reset_index(drop=True, inplace=True)
 df_public.reset_index(drop=True, inplace=True)
 
 
-
-
 print(df_public.dtypes)
 
-del df_combined
-gc.collect()
 
 print("preprocess.py done")
 

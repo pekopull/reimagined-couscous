@@ -18,22 +18,25 @@ from sklearn.metrics import precision_score
 from sklearn.metrics import f1_score, accuracy_score
 from sklearn.metrics import precision_recall_curve
 
-
 #from Preprocess.preprocess import df_train
 from Preprocess.preprocess import df_public
 
-
-
-# Load the CatBoost model from Google Drive
-model_path = '/content/drive/MyDrive/kaggle/catboost1122.cbm'  # Specify your model path
+print("start loading model")
+model_path = sys.argv[6]  # Specify your model path
 loaded_model = CatBoostClassifier()
 loaded_model.load_model(model_path)
-
+print(loaded_model)
+print(loaded_model.get_all_params())
+print("load model finished")
 
 columns_to_drop = ['txkey']
 
+
+
 # Define the new threshold
 new_threshold = 0.5
+# print length of df_public
+print(len(df_public))
 predicted_probabilities = loaded_model.predict_proba(df_public.drop(columns_to_drop+['label'],axis=1))
 # Apply the new threshold and convert probabilities to binary predictions
 adjusted_predictions = (predicted_probabilities[:, 1] > new_threshold).astype(int)
@@ -48,5 +51,5 @@ print(f"Number of Predictions (1): {num_ones}")
 
 ans = pd.DataFrame(data={'txkey': df_public['txkey'], 'pred': adjusted_predictions})
 ans=ans.set_index('txkey')
-ans.to_csv(sys.argv[6])
+ans.to_csv(sys.argv[7])
 ans.head(5)

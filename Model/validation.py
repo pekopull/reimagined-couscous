@@ -25,10 +25,10 @@ from Preprocess.preprocess import df_public
 columns_to_drop = ['txkey']
 # Split the data into feature (X) and label (y) data
 # df_train_new = df_train[df_train['locdt'] >= 0]
-X_train = df_train[df_train['locdt'] < int(sys.argv[4])].drop(['label']+columns_to_drop, axis=1)
-X_test = df_train[df_train['locdt'] >= int(sys.argv[4])].drop(['label']+columns_to_drop, axis=1)
-y_train = df_train[df_train['locdt'] < int(sys.argv[4])]['label']
-y_test = df_train[df_train['locdt'] >= int(sys.argv[4])]['label']
+X_train = df_train[df_train['locdt'] < int(sys.argv[5])].drop(['label']+columns_to_drop, axis=1)
+X_test = df_train[df_train['locdt'] >= int(sys.argv[5])].drop(['label']+columns_to_drop, axis=1)
+y_train = df_train[df_train['locdt'] < int(sys.argv[5])]['label']
+y_test = df_train[df_train['locdt'] >= int(sys.argv[5])]['label']
 
 print("# training data: {:d}\n# test data: {:d}".format(len(X_train), len(X_test)))
 

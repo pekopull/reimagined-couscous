@@ -28,17 +28,21 @@ print("load.py start")
 
 # Drop the specified columns in place
 pd.set_option('display.max_columns', None)
-df_train = pd.read_csv(sys.argv[1],dtype=convert_dict)
-df_train.drop(columns=columns_to_drop, inplace=True)
 
-#df_train = df_train[(df_train['locdt'] >= 40)] # Filter the DataFrame to get rows where 'locdt' > certain number
+# Load dataset_1st/training.csv
+df_train = pd.read_csv(sys.argv[1],dtype=convert_dict, na_values='NaN')
+df_train.drop(columns=columns_to_drop, inplace=True)
 df_train.fillna(-1, inplace=True)
 
+# Load dataset_2nd/public.csv
+df_public2 = pd.read_csv(sys.argv[2],dtype=convert_dict, na_values='NaN')
+df_public2.drop(columns=columns_to_drop, inplace=True)
+df_public2.fillna(-1, inplace=True)
 
-df_public = pd.read_csv(sys.argv[2],dtype=convert_dict, na_values='NaN')
-df_public.drop(columns=columns_to_drop, inplace=True)
+# Load dataset_2nd/private_1_processed.csv
+df_private = pd.read_csv(sys.argv[3],dtype=convert_dict, na_values='NaN')
+df_private.drop(columns=columns_to_drop, inplace=True)
+df_private.fillna(-1, inplace=True)
 
-#df_train = df_train.drop(["label"], axis=1)
-df_public.fillna(-1, inplace=True)
 
 print("load.py done")
