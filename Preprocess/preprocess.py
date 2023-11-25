@@ -263,7 +263,7 @@ object_columns_to_category = [
 df_combined[object_columns_to_category] = df_combined[object_columns_to_category].astype('category')
 
 # Split the combined DataFrame back into df_train and df_public based on locdt
-print(int(sys.argv[3]))
+
 df_public = df_combined[df_combined['locdt'] >= int(sys.argv[4])]
 df_train = df_combined[df_combined['locdt'] < int(sys.argv[4])]
 

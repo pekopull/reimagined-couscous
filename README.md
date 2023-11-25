@@ -12,7 +12,9 @@
 未來如果要改進的話，首先就是要把經過特徵工程處理好的資料儲存下來，然後再進行訓練。
 另外我認為我在特徵工程的部分做得還不夠好。
 可能有些特徵對模型來說是相對沒那麼重要的，但是由於比賽需要盡量提高分數，所以即使是沒那麼重要的特徵也會保留下來。
-也許未來可以嘗試移除不必要的特徵，或是使用其他的特徵工程方法。
+因此後續如果真的要導入到商業環境的話，需要再重新思考特徵工程的部分。
+也許可以嘗試移除不必要的特徵，或是使用其他的特徵工程方法。
+
 
 ## Model
 
@@ -20,7 +22,7 @@
 雖然 Catboost 也可以使用 CPU 訓練，但是使用 GPU 訓練可以大幅提升訓練速度。
 訓練環境為 Google Colab Pro，使用的是免費的 T4 GPU，並不需要使用到付費 GPU。
 使用 Google Colab 的 Pro 版本單純只是因為記憶體不足。
-訓練一次模型大約需要 3~5 分鐘，在 Preprocess 階段反而會花費較多時間(約20分鐘)。
+訓練一次模型大約只需要 3~5 分鐘，在 Preprocess 階段反而會花費較多時間(約20分鐘)。
 
 
 
@@ -52,16 +54,18 @@ $ unzip Model/saved_models/catboost_iter1146.zip -d Model/saved_models
 
 如果模型檔案有問題，可以使用以下連結下載模型檔案
 https://drive.google.com/file/d/1gk04WpwMNltwkinwfnGoaUQFItG-9Jet/view?usp=sharing
+
 備用連結: https://drive.google.com/file/d/1--i76ylDaYiRxDueRh04vuWCLlbOwimv/view?usp=sharing
 
 
-接下來要選擇要執行的程式
+接下來選擇要執行的程式，並且準備好資料集。
+
 目前需要的資料有:
 - dataset_1st/training.csv
 - dataset_2nd/public.csv
 - dataset_2nd/private_1_processed.csv
 
-未來如果資料有變動，需要修改 Preprocess/load.py 以及 Preprocess/preprocess.py
+未來如果資料有變動，需要修改 Preprocess/load.py 以及 Preprocess/preprocess.py，以及修改接收的執行參數。
 
 
 
@@ -111,7 +115,7 @@ run_train.py 會執行 Preprocess/load.py 以及 Preprocess/preprocess.py，然�
 
 執行範例
 ```
-$ python run_inference.py dataset_1st/training.csv dataset_2nd/public.csv dataset_2nd/private_1_processed.csv 60 56 Model/saved_models/model_train.cbm output_train.csv
+$ python run_train.py dataset_1st/training.csv dataset_2nd/public.csv dataset_2nd/private_1_processed.csv 60 56 Model/saved_models/model_train.cbm output_train.csv
 ```
 
 ### run_validation.py
@@ -129,7 +133,7 @@ run_validation.py 會執行 Preprocess/load.py 以及 Preprocess/preprocess.py�
 
 執行範例
 ```
-$ python run_inference.py dataset_1st/training.csv dataset_2nd/public.csv dataset_2nd/private_1_processed.csv 60 56
+$ python run_validation.py dataset_1st/training.csv dataset_2nd/public.csv dataset_2nd/private_1_processed.csv 60 56
 ```
 
 ## ipynb 檔案
